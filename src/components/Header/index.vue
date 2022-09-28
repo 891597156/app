@@ -68,7 +68,7 @@ export default {
 
       // 面试题2,。如何制定params参数可传可不传?
       // 如果路由要求传递params参数，但是你就不传递params参数，那么url会出现问题
-      //如何制定params参数可以传递，或者不传递，在配置路由的时候，在站位符的后面加上一个问好?
+      //如何指定params参数可以传递，或者不传递，在配置路由的时候，在站位符的后面加上一个问号?
       // this.$router.push({name:'search',query:{k:this.keyWord.toUpperCase()}})
 
       // 面试题3：
@@ -77,13 +77,19 @@ export default {
 
       // 面试题4：路由组件能不能传递props数据
       // 可以的：三种写法
-      let result = this.$router.push({
-        name: "search",
-        params: { keyword: this.keyWord },
-        query: { k: this.keyWord.toUpperCase() },
-      });
+      if(this.$route.query){
+        let location = {name: "search",params: { keyword: this.keyWord || undefined}}
+        location.query = this.$route.query
+        this.$router.push(location)
+      }
     },
   },
+  mounted(){
+    // 通过全局事件总线清楚关键字
+    this.$bus.$on("clear",()=>{
+      this.keyWord = ''
+    })
+  }
 };
 </script>
 
