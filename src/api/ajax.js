@@ -2,6 +2,9 @@
 import axios from 'axios';
 // 引入进度条
 import nprogress from 'nprogress';
+
+// 在当前模块中引入store
+import store from '@/store'
 // start：进度条开始  done：进度条结束
 // 引入进度条样式
 import 'nprogress/nprogress.css'
@@ -18,6 +21,10 @@ const requests = axios.create({
 requests.interceptors.request.use((config)=>{
   // config:配置对象，里面有一个属性很重要，header请求头
   // 进度条开始动
+  if(store.state.detail.uuid_token){
+    // 请求头添加一个字段(userTempId)：和后台老师商量好了
+    config.headers.userTempId = store.state.detail.uuid_token
+  }
   nprogress.start();
   return config;
 })
@@ -29,7 +36,7 @@ requests.interceptors.response.use((res)=>{
   return res.data;
 },(error)=>{
   // 响应失败的回调函数
-  return Promise.reject(new Error('faile'))
+  return Promise.reject(new Error(error));
 })
 
 // 对外暴露
